@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: lib/pinyin4j-2.5.0.jar lib/antlr-2.7.7.jar lib/antlr-runtime-3.5.2.jar lib/avalon-framework-api-4.3.1.jar lib/avalon-framework-impl-4.3.1.jar lib/commons-codec-1.10.jar lib/commons-io-2.4.jar lib/commons-lang3-3.4.jar 
+  lib/commons-logging-1.2.jar lib/guava-19.0.jar lib/httpclient-4.5.2.jar lib/httpcore-4.4.4.jar lib/jackson-annotations-2.7.0.jar lib/jackson-core-2.7.3.jar lib/jackson-databind-2.7.3.jar lib/jaxb-svg11-1.0.2.jar lib/lorem-2.0.jar 
+  lib/mbassador-1.2.4.2.jar lib/serializer-2.7.2.jar lib/stringtemplate-3.2.1.jar lib/wmf2svg-0.9.8.jar lib/xalan-2.7.2.jar lib/xmlgraphics-commons-2.1.jar lib/slf4j-nop-1.7.25.jar lib/docx4j-3.3.7.jar lib/slf4j-api-1.7.25.jar
+Main-Class: com.v88.record.V88Record
+
+
