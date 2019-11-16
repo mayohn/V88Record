@@ -141,18 +141,14 @@ public class ScreenPic {
 
 	public void start(String path) {
 		this.path = path;
-		BufferedImage contentImage = null;
 		BufferedImage configImage = null;
 		// BufferedImage configImage1 = null;
 		try {
-			contentImage = ImageIO.read(new File(path + "\\png\\content.png"));
 			configImage = ImageIO.read(new File(path + "\\png\\config.png"));
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		int contentImageHeight = contentImage.getHeight();
-		int contentImageWidth = contentImage.getWidth();
 		int configImageHeight = configImage.getHeight();
 		int configImageWidth = configImage.getWidth();
 
@@ -165,94 +161,99 @@ public class ScreenPic {
 				String picStr = contents[1].replaceAll("\r\n", "");
 				String benRenQQ = picStr.substring(picStr.indexOf("本人qq："), picStr.indexOf("级别")).split("：")[1];
 
-				ImageFind findContent = new ImageFind(path + "\\png\\content.png");
+				ImageFind findConfig = new ImageFind(path + "\\png\\config.png");
+				Location locationConfig = findConfig.findImage();
 
-				Location locationContent = findContent.findImage();
+				ImageFind findBottom1 = new ImageFind(path + "\\png\\bottom1.png");
+				Location locationBottom1 = findBottom1.findImage();
 
-				if (locationContent != null) {
-					desktopUtils.mouseMove(locationContent.getX() + contentImageWidth + 30,
-							locationContent.getY() + contentImageHeight / 2);
+				ImageFind findBottom2 = new ImageFind(path + "\\png\\bottom2.png");
+				Location locationBottom2 = findBottom2.findImage();
+				if (locationConfig != null && (locationBottom1 != null || locationBottom2 != null)) {
+					desktopUtils.mouseMove(locationConfig.getX() - 40, locationConfig.getY() + configImageHeight / 2);
 					desktopUtils.mouseLeftPress();// 点击左键
-					desktopUtils.allSelect();
+//					desktopUtils.allSelect();
 					desktopUtils.setSysClipboardText(benRenQQ);// 往粘贴板添加数据
 					desktopUtils.pasteStr();
-					ImageFind findConfig = new ImageFind(path + "\\png\\config.png");
-					Location locationConfig = findConfig.findImage();
 
-					if (locationConfig != null) {
+					desktopUtils.mouseMove(locationConfig.getX() + configImageWidth / 2,
+							locationConfig.getY() + configImageHeight / 2);
+					desktopUtils.mouseLeftPress();// 点击左键搜索
 
-						desktopUtils.mouseMove(locationConfig.getX() + configImageWidth / 2,
-								locationConfig.getY() + configImageHeight / 2);
-						desktopUtils.mouseLeftPress();// 点击左键搜索
+					ImageFind findResult0;
+					Location locationResult0;
+					ImageFind findResult;
+					Location locationResult;
+					ImageFind findFind;
+					Location locationFind;
+					int xunhuan = 0;
+					while (true) {
+						findResult0 = new ImageFind(path + "\\png\\result0.png");
+						locationResult0 = findResult0.findImage();
+						findFind=new ImageFind(path+"\\png\\find.png");
+						locationFind=findFind.findImage();
+						if (locationResult0 != null&&locationFind==null) {
 
-						ImageFind findResult0;
-						Location locationResult0;
-						ImageFind findResult;
-						Location locationResult;
-						int xunhuan = 0;
-						while (true) {
-							findResult0 = new ImageFind(path + "\\png\\result0.png");
-							locationResult0 = findResult0.findImage();
+							findResult = new ImageFind(path + "\\png\\result.png");
+							locationResult = findResult.findImage();
+							if (locationResult != null) {// 搜索到了截大图
+								Location locationBottom=locationBottom1!=null?locationBottom1:locationBottom2;
+								if (locationBottom.getY() - locationResult.getY() <= 80) {// 如果收到的下面显示半截
+									desktopUtils.mouseMove(locationConfig.getX(), locationConfig.getY() + 300);
+									desktopUtils.mouseLeftPress();// 点击左键	
+									desktopUtils.mouseWheel(2);
+								} else if (locationResult.getY() - locationResult0.getY() <= 50) {// 如果收到的上面显示半截
+									desktopUtils.mouseMove(locationConfig.getX(), locationConfig.getY() + 300);
+									desktopUtils.mouseLeftPress();// 点击左键	
+									desktopUtils.mouseWheel(-2);
+								} else {
+									try {
+										captureScreen(path + "\\bigPng", fileName + ".png");
+										cutImage(path + "\\bigPng\\" + fileName + ".png", locationResult0.getX()-30,
+												locationResult0.getY(),
+												locationBottom.getX()  - locationResult0.getX(),
+												locationBottom.getY() - locationResult0.getY());
+										Docx.createDocx(path, fileName, contents[0]);
+										ImageFind findback=new ImageFind(path + "\\png\\back.png");
+										Location locationBack=findback.findImage();
+										if (locationBack!=null) {
+											desktopUtils.mouseMove(locationBack.getX() + 10, locationBack.getY() +10);
+											desktopUtils.mouseLeftPress();// 点击左键	
+										
+										}
+									} catch (Exception e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
 
-							if (locationResult0 != null) {
+									break;
+								}
 
-								findResult = new ImageFind(path + "\\png\\result.png");
-								locationResult = findResult.findImage();
-								if (locationResult != null) {// 搜索到了截大图
-									if (locationContent.getY() - locationResult.getY() <= 80) {// 如果收到的下面显示半截
-										desktopUtils.mouseMove(locationConfig.getX() + configImageWidth / 2,
-												locationConfig.getY() - 100);
-										desktopUtils.mouseWheel(2);
-									} else if (locationResult.getY() - locationResult0.getY() <= 50) {// 如果收到的上面显示半截
-										desktopUtils.mouseMove(locationConfig.getX() + configImageWidth / 2,
-												locationConfig.getY() - 100);
-										desktopUtils.mouseWheel(-2);
+							} else {// 未显示黄色的搜索结果，需要转动鼠标
+								if (xunhuan <= 200) {
+									desktopUtils.mouseMove(locationConfig.getX(), locationConfig.getY() + 300);
+									desktopUtils.mouseLeftPress();// 点击左键	
+									if (xunhuan < 5) {
+
+									} else if (xunhuan >= 20) {
+										desktopUtils.mouseWheel(4);
+									} else if (xunhuan >= 40) {
+										desktopUtils.mouseWheel(6);
 									} else {
-										try {
-											captureScreen(path + "\\bigPng", fileName + ".png");
-											cutImage(path + "\\bigPng\\" + fileName + ".png", locationResult0.getX(),
-													locationResult0.getY(),
-													locationConfig.getX() + configImageWidth - locationResult0.getX(),
-													locationConfig.getY() - locationResult0.getY());
-											Docx.createDocx(path, fileName, contents[0]);
-										} catch (Exception e1) {
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
-										}
-
-										break;
+										desktopUtils.mouseWheel(2);
 									}
-
-								} else {// 未显示黄色的搜索结果，需要转动鼠标
-									if (xunhuan <= 200) {
-										desktopUtils.mouseMove(locationConfig.getX() + configImageWidth / 2,
-												locationConfig.getY() - 100);
-										if (xunhuan < 5) {
-
-										} else if (xunhuan >= 20) {
-											desktopUtils.mouseWheel(4);
-										} else if (xunhuan >= 40) {
-											desktopUtils.mouseWheel(6);
-										} else {
-											desktopUtils.mouseWheel(2);
-										}
-
-									}
-									xunhuan++;
 
 								}
-							}
-							try {
-								Thread.currentThread().sleep(100);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								xunhuan++;
+
 							}
 						}
-
-					} else {
-						System.out.println("未找到确定按钮，请更新图片");
-						break;
+						try {
+							Thread.currentThread().sleep(200);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 
 				} else {

@@ -406,7 +406,7 @@ public class V88Record {
 
 					if (values[0].contains("jie") && values[0].contains("dai") && values[0].contains("ren")) {
 						if (values.length > 1) {
-							if (values[1].contains("ÑôÑô")) {
+							if (values[1].contains("ÑôÑô")||values[1].contains("ÙâÙâ")) {
 								sb.append(strs[i] + "&\r\npeixunlaoshi:ÒÀÒÀ" + "*\r\n");
 							}
 						}
