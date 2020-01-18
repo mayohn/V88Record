@@ -172,7 +172,7 @@ public class ScreenPic {
 				if (locationConfig != null && (locationBottom1 != null || locationBottom2 != null)) {
 					desktopUtils.mouseMove(locationConfig.getX() - 40, locationConfig.getY() + configImageHeight / 2);
 					desktopUtils.mouseLeftPress();// 点击左键
-//					desktopUtils.allSelect();
+					// desktopUtils.allSelect();
 					desktopUtils.setSysClipboardText(benRenQQ);// 往粘贴板添加数据
 					desktopUtils.pasteStr();
 
@@ -187,39 +187,56 @@ public class ScreenPic {
 					ImageFind findFind;
 					Location locationFind;
 					int xunhuan = 0;
+					try {
+						Thread.currentThread().sleep(300);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					boolean isOnClick = false;// 搜索完点一次左键，避免多次点击搜索内容消失
 					while (true) {
 						findResult0 = new ImageFind(path + "\\png\\result0.png");
 						locationResult0 = findResult0.findImage();
-						findFind=new ImageFind(path+"\\png\\find.png");
-						locationFind=findFind.findImage();
-						if (locationResult0 != null&&locationFind==null) {
-
+						findFind = new ImageFind(path + "\\png\\find.png");
+						locationFind = findFind.findImage();
+						if (locationResult0 != null && locationFind == null) {
+							try {
+								Thread.currentThread().sleep(500);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							findResult = new ImageFind(path + "\\png\\result.png");
 							locationResult = findResult.findImage();
 							if (locationResult != null) {// 搜索到了截大图
-								Location locationBottom=locationBottom1!=null?locationBottom1:locationBottom2;
+								Location locationBottom = locationBottom1 != null ? locationBottom1 : locationBottom2;
 								if (locationBottom.getY() - locationResult.getY() <= 80) {// 如果收到的下面显示半截
-									desktopUtils.mouseMove(locationConfig.getX(), locationConfig.getY() + 300);
-									desktopUtils.mouseLeftPress();// 点击左键	
+									desktopUtils.mouseMove(locationConfig.getX()-50, locationConfig.getY() + 300);
+									if (!isOnClick) {
+										desktopUtils.mouseLeftPress();// 点击左键
+										isOnClick = true;
+									}
 									desktopUtils.mouseWheel(2);
 								} else if (locationResult.getY() - locationResult0.getY() <= 50) {// 如果收到的上面显示半截
-									desktopUtils.mouseMove(locationConfig.getX(), locationConfig.getY() + 300);
-									desktopUtils.mouseLeftPress();// 点击左键	
+									desktopUtils.mouseMove(locationConfig.getX() - 50, locationConfig.getY() + 300);
+									if (!isOnClick) {
+										desktopUtils.mouseLeftPress();// 点击左键
+										isOnClick = true;
+									}
 									desktopUtils.mouseWheel(-2);
 								} else {
 									try {
 										captureScreen(path + "\\bigPng", fileName + ".png");
-										cutImage(path + "\\bigPng\\" + fileName + ".png", locationResult0.getX()-30,
-												locationResult0.getY(),
-												locationBottom.getX()  - locationResult0.getX(),
+										cutImage(path + "\\bigPng\\" + fileName + ".png", locationResult0.getX() - 30,
+												locationResult0.getY(), locationBottom.getX() - locationResult0.getX(),
 												locationBottom.getY() - locationResult0.getY());
 										Docx.createDocx(path, fileName, contents[0]);
-										ImageFind findback=new ImageFind(path + "\\png\\back.png");
-										Location locationBack=findback.findImage();
-										if (locationBack!=null) {
-											desktopUtils.mouseMove(locationBack.getX() + 10, locationBack.getY() +10);
-											desktopUtils.mouseLeftPress();// 点击左键	
-										
+										ImageFind findback = new ImageFind(path + "\\png\\back.png");
+										Location locationBack = findback.findImage();
+										if (locationBack != null) {
+											desktopUtils.mouseMove(locationBack.getX() + 10, locationBack.getY() + 10);
+											desktopUtils.mouseLeftPress();// 点击左键
+
 										}
 									} catch (Exception e1) {
 										// TODO Auto-generated catch block
@@ -231,8 +248,11 @@ public class ScreenPic {
 
 							} else {// 未显示黄色的搜索结果，需要转动鼠标
 								if (xunhuan <= 200) {
-									desktopUtils.mouseMove(locationConfig.getX(), locationConfig.getY() + 300);
-									desktopUtils.mouseLeftPress();// 点击左键	
+									desktopUtils.mouseMove(locationConfig.getX()-50, locationConfig.getY() + 300);
+									if (!isOnClick) {
+										desktopUtils.mouseLeftPress();// 点击左键
+										isOnClick = true;
+									}
 									if (xunhuan < 5) {
 
 									} else if (xunhuan >= 20) {
